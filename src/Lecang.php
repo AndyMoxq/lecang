@@ -10,6 +10,9 @@ use ThankSong\Lecang\Response\GetOrderListResponse;
 use ThankSong\Lecang\Response\GetProductListResponse;
 use ThankSong\Lecang\Request\GetInventoryListRequest;
 use ThankSong\Lecang\Response\GetInventoryListResponse;
+use ThankSong\Lecang\Request\GetWaStorageFeeRequest;
+use ThankSong\Lecang\Response\GetWaStorageFeeRespone;
+use ThankSong\Lecang\Request\GetWaStorageFeeDetailsRequest;
 
 class Lecang {
     public static function basicReuqest(string $end_point, string $method, array $body = []): BasicResponse{
@@ -109,12 +112,43 @@ class Lecang {
     }
 
     /**
+     * 获取发货通知单详情
+     * @param string $asn_no
+     * @return BasicResponse
+     */
+    public static function getAsnDetail(string $asn_no): BasicResponse{
+        return self::basicReuqest('/oms/asnTemp/api/getByAsnCode', 'GET', ['asnCode' => $asn_no]);
+    }
+
+    /**
      * 费用试算
      * @param array $params
      * @return BasicResponse
      */
     public static function expenseTrial(array $params): BasicResponse{
         $request = new ExpenseTrialRequest($params);
+        return $request->send();
+    }
+
+    /**
+     * 获取仓租费用信息
+     * @param array $params
+     * @return GetWaStorageFeeRespone
+     * @throws \InvalidArgumentException
+     */
+    public static function getWaStorageFee(array $params=[]): GetWaStorageFeeRespone{
+        $request = new GetWaStorageFeeRequest($params);
+        return $request->send();
+    }
+
+    /**
+     * 获取仓租费用明细信息
+     * @param int $dailyExpenseId
+     * @return BasicResponse
+     * @throws \InvalidArgumentException
+     */
+    public static function getWaStorageFeeDetails(int $dailyExpenseId): BasicResponse{
+        $request = new GetWaStorageFeeDetailsRequest($dailyExpenseId);
         return $request->send();
     }
 
